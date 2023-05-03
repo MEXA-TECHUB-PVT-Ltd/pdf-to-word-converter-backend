@@ -7,7 +7,7 @@ module.exports = app => {
   let router = require("express").Router();
 
   
-  router.post("/convert_images_to_pdf", upload.array('pdf'), imgToPdf.imgToPdf);
+  router.post("/convert_images_to_pdf", upload.array('images'), imgToPdf.imgToPdf);
 
 
   app.use("/imgToPdf", router);

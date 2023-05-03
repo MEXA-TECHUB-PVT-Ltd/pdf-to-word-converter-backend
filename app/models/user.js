@@ -3,7 +3,7 @@
 // 		username: {
 // 		email: {
 // 		password: {
-// 		accountType:{
+// 		status:{
 
 const { sql } = require("../config/db.config");
 const bcrypt = require("bcryptjs");
@@ -13,7 +13,7 @@ const User = function (User) {
 	this.username = User.username;
 	this.email = User.email;
 	this.password = User.password;
-	this.accountType = User.accountType;
+	this.status = User.status;
 };
 User.create = async (req, res) => {
 	sql.query(`CREATE TABLE IF NOT EXISTS public.User (
@@ -21,7 +21,7 @@ User.create = async (req, res) => {
 		username text,
 		email text ,
         password text ,
-        accountType text,
+        status text,
         createdAt timestamp,
         updatedAt timestamp ,
         PRIMARY KEY (id))  ` , async (err, result) => {
@@ -53,11 +53,11 @@ User.create = async (req, res) => {
 				} else if (checkResult.rows.length === 0) {
 					const salt = await bcrypt.genSalt(10);
 					let hashpassword = await bcrypt.hash(req.body.password, salt);
-					const { username, email, accountType} = req.body;
-					const query = `INSERT INTO "user" (id,username,email,password ,accounttype , createdat ,updatedat )
+					const { username, email} = req.body;
+					const query = `INSERT INTO "user" (id,username,email,password ,status , createdat ,updatedat )
                             VALUES (DEFAULT, $1, $2, $3, $4 , 'NOW()','NOW()' ) RETURNING * `;
 					const foundResult = await sql.query(query,
-						[username, email, hashpassword, accountType]);
+						[username, email, hashpassword, 'unblock']);
 					if (foundResult.rows.length > 0) {
 						if (err) {
 							res.json({

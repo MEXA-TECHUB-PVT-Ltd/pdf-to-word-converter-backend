@@ -108,10 +108,16 @@ otp.VerifyEmail = async (req, res) => {
             sendOTPVerificationEmail(foundResult.rows[0].email, res)
         }
         else {
-            res.json({
-                message: "This email is not Registered with this app , please add valid email",
-                status: false
-            })
+            const found_email_query = 'SELECT * FROM "admin"  WHERE email = $1'
+            const foundResult = await sql.query(found_email_query, [email])
+            if (foundResult.rowCount > 0) {
+                sendOTPVerificationEmail(foundResult.rows[0].email, res)
+            } else {
+                res.json({
+                    message: "This email is not Registered with this app , please add valid email",
+                    status: false
+                })
+            }
         }
     }
     catch (err) {

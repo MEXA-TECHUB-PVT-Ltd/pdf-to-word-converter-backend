@@ -49,6 +49,7 @@ exports.passwordReset = (req, res) => {
   }  
   user.resetPassword( req, res);
 };
+
 exports.verifyEmail = (req, res) => {
   if (!req.body) {
     res.json({
