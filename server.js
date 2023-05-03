@@ -33,10 +33,13 @@ app.get("/", (req, res) => {
   res.json({ message: "Welcome to PTWC" });
 });
 
+require("./app/routes/admin")(app);
 require("./app/routes/auth")(app);
 require("./app/routes/docToPdf")(app);
 require("./app/routes/pdfToDoc")(app);
 require("./app/routes/imgToPdf")(app);
+require("./app/routes/pdf")(app);
+require("./app/routes/favourite")(app);
 require("./app/routes/PrivacyPolicy")(app);
 require("./app/routes/TermsConditions")(app);
 
