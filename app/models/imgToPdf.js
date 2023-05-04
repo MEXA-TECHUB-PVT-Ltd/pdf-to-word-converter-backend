@@ -16,32 +16,52 @@ ImgToPdf.ImgToPdf = async (req, res) => {
 			message: 'please select a file'
 		})
 	}
-	else if (req.files.length > 20){
+	else if (req.files.length > 20) {
+		for (let i = 0; i < req.files.length; i++) {
+			fs.unlink(req.files[i].path, (err) => {
+				if (err) {
+					throw err;
+				}
+				console.log("Delete File successfully.");
+			});
+		}	
 		res.json({
 			status: false,
 			message: 'Images must be less than 20'
 		})
 	} else {
-		let check = false;
+		let check = true;
 		for (let i = 0; i < req.files.length; i++) {
-			if (req.files[i].originalname.endsWith('jpg') ||
-				req.files[i].originalname.endsWith('png') ||
-				req.files[i].originalname.endsWith('jpeg')) {
-				check = true;
-			}
+			if (req.files[i].originalname.endsWith('jpg')) {
 
+			} else if (req.files[i].originalname.endsWith('png')) {
+
+			} else if (req.files[i].originalname.endsWith('jpeg')) {
+
+			} else {
+				check = false;
+			}
 		}
 		if (check === true) {
 			convert(req, res);
 		} else {
+			for (let i = 0; i < req.files.length; i++) {
+				fs.unlink(req.files[i].path, (err) => {
+					if (err) {
+						throw err;
+					}
+					console.log("Delete File successfully.");
+				});
+			}		
 			res.json({
 				status: false,
-				message: 'Select jpg 0r png or jpeg file'
+				message: 'Select jpg or png or jpeg file'
 			})
 
 		}
 	}
 }
+
 
 const convert = async (req, res) => {
 	list = [];
@@ -52,9 +72,6 @@ const convert = async (req, res) => {
 			// list[i] = `/Users/mac/Desktop/PTWC/PTWC_Backend/app/models/docx/${req.files.pdf[i].name}`;
 		}
 	}
-
-
-
 	var filename = `./imges_uploads/${Date.now()}new.pdf`
 	await imagesToPdf(list, filename)
 
