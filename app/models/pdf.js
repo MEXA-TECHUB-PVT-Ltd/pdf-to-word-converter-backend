@@ -47,77 +47,101 @@ pdf.mergePdf = async (req, res) => {
 			status: false,
 			message: 'please select a file'
 		})
-	} else
-		var check = true;
-	for (let i; i = req.files.length; i++) {
-		if (!req.files[i].originalname.endsWith('pdf')) {
-			check = false
-		}
+	} else if (req.files.length > 20) {
+		for (let i = 0; i < req.files.length; i++) {
+			fs.unlink(req.files[i].path, (err) => {
+				if (err) {
+					throw err;
+				}
+				console.log("Delete File successfully.");
+			});
+		}	
+		res.json({
+			status: false,
+			message: 'No more than 20 files!'
+		})
 	}
-	if (check = true) {
-		var merger = new PDFMerger();
-		console.log("starting merger");
-		(async () => {
-			for (let i = 0; i < req.files.length; i++) {
-				merger.add(req.files[i].path);
+	else {
+		var check = true;
+		for (let i; i = req.files.length; i++) {
+			if (!req.files[i].originalname.endsWith('pdf')) {
+				check = false
 			}
-			console.log(merger);
-			let mergedFiles = `./imges_uploads/${Date.now()}new.pdf`
-			await merger.save(mergedFiles);
-			//save under given name and reset the internal document
-			console.log("MERGED");
+		}
 
-			sql.query(`CREATE TABLE IF NOT EXISTS public.pdf (
+		if (check = true) {
+			var merger = new PDFMerger();
+			console.log("starting merger");
+			(async () => {
+				for (let i = 0; i < req.files.length; i++) {
+					merger.add(req.files[i].path);
+				}
+				console.log(merger);
+				let mergedFiles = `./imges_uploads/${Date.now()}new.pdf`
+				await merger.save(mergedFiles);
+				//save under given name and reset the internal document
+				console.log("MERGED");
+				for (let i = 0; i < req.files.length; i++) {
+					fs.unlink(req.files[i].path, (err) => {
+						if (err) {
+							throw err;
+						}
+						console.log("Delete File successfully.");
+					});
+				}			
+				sql.query(`CREATE TABLE IF NOT EXISTS public.pdf (
 					id SERIAL NOT NULL,
 					userid SERIAL NOT NULL,
 					fileurl text ,
 					createdAt timestamp,
 					updatedAt timestamp ,
 					PRIMARY KEY (id)) ;` , async (err, result) => {
-				if (err) {
-					res.json({
-						message: "Try Again",
-						status: false,
-						err
-					});
-				} else {
-					if (!req.files) {
+					if (err) {
 						res.json({
-							message: "Please select file",
+							message: "Try Again",
 							status: false,
+							err
 						});
 					} else {
-						const { userID } = req.body;
+						if (!req.files) {
+							res.json({
+								message: "Please select file",
+								status: false,
+							});
+						} else {
+							const { userID } = req.body;
 
-						const query = `INSERT INTO pdf (id,userid,fileurl , createdAt ,updatedAt )
+							const query = `INSERT INTO pdf (id,userid,fileurl , createdAt ,updatedAt )
 										VALUES (DEFAULT, $1, $2 ,  'NOW()','NOW()' ) RETURNING * `;
-						const foundResult = await sql.query(query,
-							[userID, mergedFiles]);
-						if (foundResult.rows.length > 0) {
-							if (err) {
+							const foundResult = await sql.query(query,
+								[userID, mergedFiles]);
+							if (foundResult.rows.length > 0) {
+								if (err) {
+									res.json({
+										message: "Try Again",
+										status: false,
+										err
+									});
+								}
+								else {
+									res.json({
+										message: "PDF Files Merged Successfully!",
+										status: true,
+										result: foundResult.rows,
+									});
+								}
+							} else {
 								res.json({
 									message: "Try Again",
 									status: false,
 									err
 								});
 							}
-							else {
-								res.json({
-									message: "PDF Files Merged Successfully!",
-									status: true,
-									result: foundResult.rows,
-								});
-							}
-						} else {
-							res.json({
-								message: "Try Again",
-								status: false,
-								err
-							});
 						}
 					}
-				}
-			});
+				});
+			})();
+		} else {
 			for (let i = 0; i < req.files.length; i++) {
 				fs.unlink(req.files[i].path, (err) => {
 					if (err) {
@@ -125,14 +149,12 @@ pdf.mergePdf = async (req, res) => {
 					}
 					console.log("Delete File successfully.");
 				});
-			}
-
-		})();
-	} else {
-		res.json({
-			status: false,
-			message: 'Select pdf file'
-		})
+			}		
+			res.json({
+				status: false,
+				message: 'Select pdf file'
+			})
+		}
 	}
 }
 

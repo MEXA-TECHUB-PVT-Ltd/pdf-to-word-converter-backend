@@ -16,32 +16,55 @@ const docToPdf = function (docToPdf) {
 };
 docToPdf.docToPdf = async (req, res) => {
 	console.log(req.files);
-	if(!req.files){
+	if (!req.files) {
 		res.json({
-			status:false,
-			message:'please select a file'
-	})
-	}else{
-		if(req.files[0].originalname.endsWith('docx') || req.files[0].originalname.endsWith('doc') ){
-			convert(req, res);
-		} else {
-			res.json({
-				status:false,
-				message:'Select Docx Or Doc'
+			status: false,
+			message: 'please select a file'
 		})
-	
+	} else {
+		if (req.files[0].originalname.endsWith('docx') || req.files[0].originalname.endsWith('doc')) {
+			console.log(req.files.length)
+			if (req.files.length > 1) {
+				for (let i = 0; i < req.files.length; i++) {
+					fs.unlink(req.files[i].path, (err) => {
+						if (err) {
+							throw err;
+						}
+						console.log("Delete File successfully.");
+					});
+				}			
+				res.json({
+					status: false,
+					message: 'Select Single File'
+				})	
+			} else {
+				convert(req, res);
+			}
+		} else {
+			for (let i = 0; i < req.files.length; i++) {
+				fs.unlink(req.files[i].path, (err) => {
+					if (err) {
+						throw err;
+					}
+					console.log("Delete File successfully.");
+				});
+			}		
+			res.json({
+				status: false,
+				message: 'Select Docx Or Doc File'
+			})
 		}
 	}
 
 }
 
-const convert = async ( req, res) => {
+const convert = async (req, res) => {
 	const ext = '.pdf'
 	const inputPath = path.join(req.files[0].path);
 	console.log("inputPath")
 	console.log(inputPath)
 	const outputPath = path.join(`./imges_uploads/${Date.now()}new${ext}`);
-	const docxBuf =  await fs.readFile(inputPath);
+	const docxBuf = await fs.readFile(inputPath);
 	// Convert it to pdf format with undefined filter (see Libreoffice docs about filter)
 	let pdfBuf = await libre.convertAsync(docxBuf, ext, undefined);
 	var filename = ``
@@ -49,6 +72,15 @@ const convert = async ( req, res) => {
 	// Here in done you have pdf file which you can save or transfer in another stream
 	await fs.writeFile(outputPath, pdfBuf);
 	console.log(pdfBuf)
+
+	for (let i = 0; i < req.files.length; i++) {
+		fs.unlink(req.files[i].path, (err) => {
+			if (err) {
+				throw err;
+			}
+			console.log("Delete File successfully.");
+		});
+	}
 	sql.query(`CREATE TABLE IF NOT EXISTS public.pdf (
         id SERIAL NOT NULL,
         userid SERIAL NOT NULL,
