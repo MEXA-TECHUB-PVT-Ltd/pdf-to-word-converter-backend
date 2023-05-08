@@ -66,3 +66,17 @@ CREATE TABLE IF NOT EXISTS public.favpdf (
         createdAt timestamp NOT NULL,
         updatedAt timestamp ,
         PRIMARY KEY (id));
+
+CREATE TABLE IF NOT EXISTS public.SubscriptionPlan (
+        id SERIAL NOT NULL,
+        name text,
+        price text ,
+        no_Img_to_pdf_conversion text,
+        no_pdf_to_word_conversion text,
+        no_word_to_pdf_conversion text ,
+        freeTrail text,
+        freeTrailDays text,
+        duratin_days text,
+        createdAt timestamp,
+        updatedAt timestamp ,
+        PRIMARY KEY (id));

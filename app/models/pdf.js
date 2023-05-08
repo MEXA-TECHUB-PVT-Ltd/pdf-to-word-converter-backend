@@ -1,44 +1,139 @@
+//imports
 const { sql } = require("../config/db.config");
 const path = require('path');
-const exec = require("child_process").exec;
 const fs = require('fs').promises;
-var qpdf = require('node-qpdf');
 const PDFMerger = require('pdf-merger-js');
+const Processor = require('encrypt-decrpt-pdf').PDFProcessor;
+
 
 const pdf = function (pdf) {
 	this.userid = pdf.userid;
 	this.fileurl = pdf.fileurl;
 };
-pdf.lockPdf = async (req, res) => {
-	if (!req.files) {
-		res.json({
-			status: false,
-			message: 'please select a file'
-		})
-	} else {
-		var options = {
-			keyLength: 128,
-			password: '123456'
-		}
-		qpdf.encrypt(req.files[0].path, options);
-		console.log(req.files);
-	}
 
+
+pdf.lockPdf = async (req, res) => {
+	sql.query(`SELECT * FROM "pdf" WHERE id = ${req.body.fileID};`, (err, result) => {
+		if (err) {
+			console.log(err);
+			res.json({
+				message: "Try Again",
+				status: false,
+				err
+			});
+		} else if(result.rowCount === 1) {
+			const password = req.body.password;
+			const username = req.body.id;
+
+			const processor = new Processor(password, username);
+			const sourcepath = path.join(result.rows[0].fileurl);
+			const destpath = '--replace-input';
+
+			processor.encrypt(destpath, sourcepath)
+				.then(data => {
+					if (data.error === false) {
+						res.json({
+							status: true,
+							message: "Pdf File Encrypted Successfully",
+							result: result.rows
+						})
+						console.log(data)
+					}
+					else{
+						res.json({
+							status: false,
+							message: "Already encrypted, First Remove Encryption",
+						})
+						console.log(data)
+					}
+				})
+				.catch(err => {
+					if(err.error === false){
+						res.json({
+							status: true,
+							message: "Pdf File Encrypted Successfully",
+							result: result.rows
+						})
+						console.log(err)
+					}else{
+					res.json({
+						status: false,
+						message: err.message,
+					})
+					console.log(err)
+				}
+				});
+		}else{
+			res.json({
+				status: false,
+				message: 'No File Exists',
+			})
+		}
+	});
 	// convert(req, res);
 }
+
 pdf.unlockPdf = async (req, res) => {
-	if (!req.files) {
-		res.json({
-			status: false,
-			message: 'please select a file'
-		})
-	} else {
-		console.log(req.files);
-	}
+	sql.query(`SELECT * FROM "pdf" WHERE id = ${req.body.fileID};`, (err, result) => {
+		if (err) {
+			console.log(err);
+			res.json({
+				message: "Try Again",
+				status: false,
+				err
+			});
+		} else if(result.rowCount === 1) {
+			const password = req.body.password;
+			const username = req.body.id;
 
+			const processor = new Processor(password, username);
+			const sourcepath = path.join(result.rows[0].fileurl);
+			const destpath = '--replace-input';
+
+			processor
+				.decrypt(destpath, sourcepath)
+				.then(data => {
+					if (data.error === false) {
+						res.json({
+							status: true,
+							message: "Pdf File Decrypt Successfully",
+							result: result.rows
+						})
+						console.log(data)
+					}
+					else{
+						res.json({
+							status: false,
+							message: 'invalid password',
+						})
+						console.log(data)
+					}
+				})
+				.catch(err => {
+					console.log(err)
+					if(err.error === false ){
+						res.json({
+							status: true,
+							message: "Pdf File Decrypt Successfully",
+							result: result.rows
+						})
+						console.log(err)
+					}else{
+					res.json({
+						status: false,
+						message: err.message,
+					})
+					console.log(err)
+				}
+				});
+		}else{
+			res.json({
+				status: false,
+				message: 'No File Exists',
+			})
+		}
+	});
 	// convert(req, res);
-
-
 }
 
 pdf.mergePdf = async (req, res) => {
@@ -55,7 +150,7 @@ pdf.mergePdf = async (req, res) => {
 				}
 				console.log("Delete File successfully.");
 			});
-		}	
+		}
 		res.json({
 			status: false,
 			message: 'No more than 20 files!'
@@ -88,7 +183,7 @@ pdf.mergePdf = async (req, res) => {
 						}
 						console.log("Delete File successfully.");
 					});
-				}			
+				}
 				sql.query(`CREATE TABLE IF NOT EXISTS public.pdf (
 					id SERIAL NOT NULL,
 					userid SERIAL NOT NULL,
@@ -149,7 +244,7 @@ pdf.mergePdf = async (req, res) => {
 					}
 					console.log("Delete File successfully.");
 				});
-			}		
+			}
 			res.json({
 				status: false,
 				message: 'Select pdf file'

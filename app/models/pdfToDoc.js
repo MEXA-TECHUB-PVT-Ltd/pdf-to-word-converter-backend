@@ -5,7 +5,10 @@ var GroupDocs = require('groupdocs-conversion-cloud');
 global.clientId = "3d689a28-3d66-4f30-b77a-afb4660135dc";
 global.clientSecret = "eea042a9d1384bcf8b80eeb2665e5ce9";
 global.myStorage = "";
-const unoconv = require('node-unoconv');
+// const unoconv = require('node-unoconv');
+const unoconv = require('awesome-unoconv');
+
+
 const PDFServicesSdk = require('@adobe/pdfservices-node-sdk');
 // const fs = require('fs');
 // const unoconv = require('unoconv');
@@ -45,44 +48,59 @@ pdfToDoc.pdfToDoc = async (req, res) => {
 // soffice --convert-to docx --outdir ${outputPath} ${inputPath}
 
 
-const OUTPUT = `/Users/mac/Desktop/PTWC/PTWC_Backend/imges_uploads/${Date.now()}new.docx`;
-// If our output already exists, remove it so we can run the application again.
-// if(fs.existsSync(OUTPUT)) fs.unlinkSync(OUTPUT);
+const sourceFilePath = path.resolve(req.files[0].path);
+const outputFilePath = path.resolve(`/Users/mac/Desktop/PTWC/PTWC_Backend/imges_uploads/${Date.now()}new.docx`);
+ 
+unoconv
+  .convert(sourceFilePath, outputFilePath)
+  .then(result => {
+    console.log(result); // return outputFilePath
+  })
+  .catch(err => {
+    console.log(err);
+  });
 
-const INPUT = req.files[0].path;
-
-const credentials = PDFServicesSdk.Credentials
-        .serviceAccountCredentialsBuilder()
-        .fromFile('pdfservices-api-credentials.json')
-        .build();
-
-// Create an ExecutionContext using credentials
-const executionContext = PDFServicesSdk.ExecutionContext.create(credentials);
-
-
-
-// This creates an instance of the Export operation we're using, as well as specifying output type (DOCX)
-const exportPdfOperation = PDFServicesSdk.ExportPDF.Operation.createNew(PDFServicesSdk.ExportPDF.SupportedTargetFormats.DOCX);
-
-// Set operation input from a source file
-const inputPDF = PDFServicesSdk.FileRef.createFromLocalFile(INPUT);
-exportPdfOperation.setInput(inputPDF);
+  console.log('2');
 
 
-try {
+// const OUTPUT = `/Users/mac/Desktop/PTWC/PTWC_Backend/imges_uploads/${Date.now()}new.docx`;
+// // If our output already exists, remove it so we can run the application again.
+// // if(fs.existsSync(OUTPUT)) fs.unlinkSync(OUTPUT);
 
-    exportPdfOperation.execute(executionContext)
-    .then(result => result.saveAsFile(OUTPUT))
-    .then(() => {
-        console.log('Export Done')
-    })
-    .catch(err => {
-        console.log('Exception encountered while executing operation', err);
-    });
+// const INPUT = req.files[0].path;
 
-} catch(err) {
-    console.error('Error:', err);
-}
+// const credentials = PDFServicesSdk.Credentials
+//         .serviceAccountCredentialsBuilder()
+//         .fromFile('pdfservices-api-credentials.json')
+//         .build();
+
+// // Create an ExecutionContext using credentials
+// const executionContext = PDFServicesSdk.ExecutionContext.create(credentials);
+
+
+
+// // This creates an instance of the Export operation we're using, as well as specifying output type (DOCX)
+// const exportPdfOperation = PDFServicesSdk.ExportPDF.Operation.createNew(PDFServicesSdk.ExportPDF.SupportedTargetFormats.DOCX);
+
+// // Set operation input from a source file
+// const inputPDF = PDFServicesSdk.FileRef.createFromLocalFile(INPUT);
+// exportPdfOperation.setInput(inputPDF);
+
+
+// try {
+
+//     exportPdfOperation.execute(executionContext)
+//     .then(result => result.saveAsFile(OUTPUT))
+//     .then(() => {
+//         console.log('Export Done')
+//     })
+//     .catch(err => {
+//         console.log('Exception encountered while executing operation', err);
+//     });
+
+// } catch(err) {
+//     console.error('Error:', err);
+// }
 
 // const docxPath = req.files[0].path;
 // console.log(`docx: ${docxPath}`);
@@ -160,7 +178,6 @@ try {
 // 	}
 // 	console.log("err");
 // });
-console.log('2');
 
 // Convert the file using unoconv
 // unoconv.convert(inputPath, (err, result) => {
@@ -236,118 +253,118 @@ console.log('2');
 			// convert(req,res);
 }
 
-const convert = async (req,res) => {
-	try {
-		console.log(req.files);
+// const convert = async (req,res) => {
+// 	try {
+// 		console.log(req.files);
 
-		var resourcesFolder =req.files[0].path;
-		fs.readFile(resourcesFolder, (err, fileStream) => {
-			// construct FileApi
-			var fileApi = GroupDocs.FileApi.fromConfig(config);
-			// create upload file request
-			var result = `https://api.groupdocs.cloud/v2.0/conversion/swagger/spec/conversion/storage/file/${req.file[0].path}`
-			console.log(result);
-			var request = new GroupDocs.UploadFileRequest("sample1.pdf", fileStream, myStorage);
-			// upload file
-			fileApi.uploadFile(request);
-		});
+// 		var resourcesFolder =req.files[0].path;
+// 		fs.readFile(resourcesFolder, (err, fileStream) => {
+// 			// construct FileApi
+// 			var fileApi = GroupDocs.FileApi.fromConfig(config);
+// 			// create upload file request
+// 			var result = `https://api.groupdocs.cloud/v2.0/conversion/swagger/spec/conversion/storage/file/${req.file[0].path}`
+// 			console.log(result);
+// 			var request = new GroupDocs.UploadFileRequest("sample1.pdf", fileStream, myStorage);
+// 			// upload file
+// 			fileApi.uploadFile(request);
+// 		});
 
 
-		// initialize api
-		let convertApi = GroupDocs.ConvertApi.fromKeys(clientId, clientSecret);
-		// define convert settings
-		let settings = new GroupDocs.ConvertSettings();
-		settings.filePath = "sample.pdf"; // input file path on the cloud
-		settings.format = "docx";         // output format
-		settings.outputPath = "PTW";   // output file folder on the cloud
+// 		// initialize api
+// 		let convertApi = GroupDocs.ConvertApi.fromKeys(clientId, clientSecret);
+// 		// define convert settings
+// 		let settings = new GroupDocs.ConvertSettings();
+// 		settings.filePath = "sample.pdf"; // input file path on the cloud
+// 		settings.format = "docx";         // output format
+// 		settings.outputPath = "PTW";   // output file folder on the cloud
 
-		// create convert document request
-		let request = new GroupDocs.ConvertDocumentRequest(settings);
-		// convert document
-		console.log(request);
-		let result = await  convertApi.convertDocument(request);
-		console.log("Document converted successfully: " + result[0].url);
-		download(req,res);
-	} catch (err) {
-		console.log(err);
-	}
-}
+// 		// create convert document request
+// 		let request = new GroupDocs.ConvertDocumentRequest(settings);
+// 		// convert document
+// 		console.log(request);
+// 		let result = await  convertApi.convertDocument(request);
+// 		console.log("Document converted successfully: " + result[0].url);
+// 		download(req,res);
+// 	} catch (err) {
+// 		console.log(err);
+// 	}
+// }
 
-const download = async (req,res) => {
-	try{
-		// construct FileApi
-		var fileApi = GroupDocs.FileApi.fromConfig(config);
+// const download = async (req,res) => {
+// 	try{
+// 		// construct FileApi
+// 		var fileApi = GroupDocs.FileApi.fromConfig(config);
 
-		// create download file request
-		let request = new GroupDocs.DownloadFileRequest("PTW/sample.docx", myStorage);
-		// download file
-		console.log(request);
-		let response = await fileApi.downloadFile(request);
-		console.log(response);
-		var filename = `./imges_uploads/${Date.now()}new.docx`
-		// fs.writeFile("C:\\Files\\sample.docx", response, "binary", function (err) { });
-		fs.writeFile(filename, response, "binary", function (err) { });
-		// save file in your working directory
-		sql.query(`CREATE TABLE IF NOT EXISTS public.word (
-			id SERIAL NOT NULL,
-			userid SERIAL NOT NULL,
-			fileurl text ,
-			createdAt timestamp,
-			updatedAt timestamp ,
-			PRIMARY KEY (id)) ;` , async (err, result) => {
-			if (err) {
-				res.json({
-					message: "Try Again",
-					status: false,
-					err
-				});
-			} else {
-				if (!req.files) {
-					res.json({
-						message: "Please select file",
-						status: false,
-					});
-				} else {
-					const { userID } = req.body;
+// 		// create download file request
+// 		let request = new GroupDocs.DownloadFileRequest("PTW/sample.docx", myStorage);
+// 		// download file
+// 		console.log(request);
+// 		let response = await fileApi.downloadFile(request);
+// 		console.log(response);
+// 		var filename = `./imges_uploads/${Date.now()}new.docx`
+// 		// fs.writeFile("C:\\Files\\sample.docx", response, "binary", function (err) { });
+// 		fs.writeFile(filename, response, "binary", function (err) { });
+// 		// save file in your working directory
+// 		sql.query(`CREATE TABLE IF NOT EXISTS public.word (
+// 			id SERIAL NOT NULL,
+// 			userid SERIAL NOT NULL,
+// 			fileurl text ,
+// 			createdAt timestamp,
+// 			updatedAt timestamp ,
+// 			PRIMARY KEY (id)) ;` , async (err, result) => {
+// 			if (err) {
+// 				res.json({
+// 					message: "Try Again",
+// 					status: false,
+// 					err
+// 				});
+// 			} else {
+// 				if (!req.files) {
+// 					res.json({
+// 						message: "Please select file",
+// 						status: false,
+// 					});
+// 				} else {
+// 					const { userID } = req.body;
 	
-					const query = `INSERT INTO "word" (id,userid,fileurl , createdAt ,updatedAt )
-								VALUES (DEFAULT, $1, $2 ,  'NOW()','NOW()' ) RETURNING * `;
-					const foundResult = await sql.query(query,
-						[userID, filename]);
-					if (foundResult.rows.length > 0) {
-						if (err) {
-							res.json({
-								message: "Try Again",
-								status: false,
-								err
-							});
-						}
-						else {
-							res.json({
-								message: "img To Pdf Added Successfully!",
-								status: true,
-								result: foundResult.rows,
-							});
-						}
-					} else {
-						res.json({
-							message: "Try Again",
-							status: false,
-							err
-						});
-					}
-				}
-			}
-		});
+// 					const query = `INSERT INTO "word" (id,userid,fileurl , createdAt ,updatedAt )
+// 								VALUES (DEFAULT, $1, $2 ,  'NOW()','NOW()' ) RETURNING * `;
+// 					const foundResult = await sql.query(query,
+// 						[userID, filename]);
+// 					if (foundResult.rows.length > 0) {
+// 						if (err) {
+// 							res.json({
+// 								message: "Try Again",
+// 								status: false,
+// 								err
+// 							});
+// 						}
+// 						else {
+// 							res.json({
+// 								message: "img To Pdf Added Successfully!",
+// 								status: true,
+// 								result: foundResult.rows,
+// 							});
+// 						}
+// 					} else {
+// 						res.json({
+// 							message: "Try Again",
+// 							status: false,
+// 							err
+// 						});
+// 					}
+// 				}
+// 			}
+// 		});
 
 
 
 
-	} catch (err) {
-		console.log('err');
-		console.log(err);
-	}
-}
+// 	} catch (err) {
+// 		console.log('err');
+// 		console.log(err);
+// 	}
+// }
 module.exports = pdfToDoc;
 
 
