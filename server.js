@@ -42,6 +42,7 @@ require("./app/routes/pdf")(app);
 require("./app/routes/favourite")(app);
 require("./app/routes/PrivacyPolicy")(app);
 require("./app/routes/TermsConditions")(app);
+require("./app/routes/subscription")(app);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8082;
