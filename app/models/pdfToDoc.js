@@ -49,7 +49,7 @@ pdfToDoc.pdfToDoc = async (req, res) => {
 
 
 const sourceFilePath = path.resolve(req.files[0].path);
-const outputFilePath = path.resolve(`/Users/mac/Desktop/PTWC/PTWC_Backend/imges_uploads/${Date.now()}new.docx`);
+const outputFilePath = path.resolve(`./imges_uploads/${Date.now()}new.docx`);
  
 unoconv
   .convert(sourceFilePath, outputFilePath)
