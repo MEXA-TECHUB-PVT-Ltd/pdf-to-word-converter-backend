@@ -158,7 +158,8 @@ pdf.mergePdf = async (req, res) => {
 	}
 	else {
 		var check = true;
-		for (let i; i = req.files.length; i++) {
+		console.log(req.files[0].ori)
+		for (let i = 0; i > req.files.length; i++) {
 			if (!req.files[i].originalname.endsWith('pdf')) {
 				check = false
 			}
@@ -184,7 +185,7 @@ pdf.mergePdf = async (req, res) => {
 						console.log("Delete File successfully.");
 					});
 				}
-				sql.query(`CREATE TABLE IF NOT EXISTS public.pdf (
+				sql.query(`CREATE TABLE IF NOT EXISTS public.mergepdf (
 					id SERIAL NOT NULL,
 					userid SERIAL NOT NULL,
 					fileurl text ,
@@ -206,7 +207,7 @@ pdf.mergePdf = async (req, res) => {
 						} else {
 							const { userID } = req.body;
 
-							const query = `INSERT INTO pdf (id,userid,fileurl , createdAt ,updatedAt )
+							const query = `INSERT INTO mergepdf (id,userid,fileurl , createdAt ,updatedAt )
 										VALUES (DEFAULT, $1, $2 ,  'NOW()','NOW()' ) RETURNING * `;
 							const foundResult = await sql.query(query,
 								[userID, mergedFiles]);
@@ -252,5 +253,50 @@ pdf.mergePdf = async (req, res) => {
 		}
 	}
 }
+
+pdf.getAllPDF = (req, res) => {
+	sql.query(`SELECT * FROM "pdf";`, (err, result) => {
+		if (err) {
+			res.json({
+				message: "Try Again",
+				status: false,
+				err
+			});
+		} else {
+			res.json({
+				message: "ALL PDF FILES",
+				status: true,
+				result: result.rows,
+			});
+		}
+	});
+
+}
+
+
+pdf.getAllMergedPDF = (req, res) => {
+	sql.query(`SELECT * FROM "mergepdf";`, (err, result) => {
+		if (err) {
+			res.json({
+				message: "Try Again",
+				status: false,
+				err
+			});
+		} else {
+			res.json({
+				message: "ALL Merged PDF FILES",
+				status: true,
+				result: result.rows,
+			});
+		}
+	});
+
+}
+
+
+
+
+
+
 
 module.exports = pdf;

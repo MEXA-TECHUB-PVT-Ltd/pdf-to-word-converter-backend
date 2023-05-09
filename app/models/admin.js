@@ -305,7 +305,7 @@ admin.newPassword = async (req, res) => {
 		}
 		else {
 			res.json({
-				message: "Email Not Found ",
+				message: "Not Found Any OTP, First Verify Email then Change Password",
 				status: false
 			})
 		}

@@ -29,3 +29,22 @@ exports.mergePdf = (req, res) => {
   }  
   pdf.mergePdf( req, res);
 };
+
+exports.getAllPDF = (req, res) => {
+  if (!req.body) {
+    res.json({
+      message: "Content can not be empty!",
+      status: false,
+     });
+  }  
+  pdf.getAllPDF( req, res);
+};
+exports.getAllMergedPDF = (req, res) => {
+  if (!req.body) {
+    res.json({
+      message: "Content can not be empty!",
+      status: false,
+     });
+  }  
+  pdf.getAllMergedPDF( req, res);
+};

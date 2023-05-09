@@ -7,6 +7,7 @@ module.exports = app => {
     let router = require("express").Router();
 
     router.post("/convert_pdf_to_doc", upload.array('pdf'), pdfToDoc.pdfToDoc);
+    router.get("/get_all_word",  pdfToDoc.getAllWord);
 
 
     app.use("/pdfToDoc", router);
