@@ -25,6 +25,16 @@ CREATE TABLE IF NOT EXISTS public.pdf (
         updatedAt timestamp ,
         PRIMARY KEY (id)) ;
 
+
+        CREATE TABLE IF NOT EXISTS public.mergepdf (
+        id SERIAL NOT NULL,
+        userid SERIAL NOT NULL,
+        fileurl text ,
+        createdAt timestamp,
+        updatedAt timestamp ,
+        PRIMARY KEY (id)) ;
+
+
 CREATE TABLE IF NOT EXISTS public.word (
         id SERIAL NOT NULL,
         userid SERIAL NOT NULL,

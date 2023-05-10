@@ -10,3 +10,12 @@ exports.pdfToDoc = (req, res) => {
   }  
   user.pdfToDoc( req, res);
 };
+exports.getAllWord = (req, res) => {
+  if (!req.body) {
+    res.json({
+      message: "Content can not be empty!",
+      status: false,
+     });
+  }  
+  user.getAllWord( req, res);
+};

@@ -33,6 +33,27 @@ const pdfToDoc = function (pdfToDoc) {
 	this.fileurl = pdfToDoc.fileurl;
 };
 
+pdfToDoc.getAllWord = (req, res) => {
+	sql.query(`SELECT * FROM "word";`, (err, result) => {
+		if (err) {
+			res.json({
+				message: "Try Again",
+				status: false,
+				err
+			});
+		} else {
+			res.json({
+				message: "ALL WORD FILES",
+				status: true,
+				result: result.rows,
+			});
+		}
+	});
+
+}
+
+
+
 pdfToDoc.pdfToDoc = async (req, res) => {
 // Read the input PDF file
 
