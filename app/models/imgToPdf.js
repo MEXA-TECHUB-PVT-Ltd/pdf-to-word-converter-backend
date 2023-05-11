@@ -83,7 +83,7 @@ const convert = async (req, res) => {
 			console.log("Delete File successfully.");
 		});
 	}
-	sql.query(`CREATE TABLE IF NOT EXISTS public.pdf (
+	sql.query(`CREATE TABLE IF NOT EXISTS public.imagepdf (
 		        id SERIAL NOT NULL,
 		        userid SERIAL NOT NULL,
 		        fileurl text ,
@@ -105,7 +105,7 @@ const convert = async (req, res) => {
 			} else {
 				const { userID } = req.body;
 
-				const query = `INSERT INTO "pdf" (id,userid,fileurl , createdAt ,updatedAt )
+				const query = `INSERT INTO "imagepdf" (id,userid,fileurl , createdAt ,updatedAt )
 			                        VALUES (DEFAULT, $1, $2 ,  'NOW()','NOW()' ) RETURNING * `;
 				const foundResult = await sql.query(query,
 					[userID, filename]);
@@ -132,6 +132,99 @@ const convert = async (req, res) => {
 					});
 				}
 			}
+		}
+	});
+
+}
+
+
+ImgToPdf.getAllImgToPdfYear = (req, res) => {
+	sql.query(`SELECT EXTRACT(year FROM  createdat) AS year
+	FROM "imagepdf" 
+	GROUP BY EXTRACT(year FROM createdat )
+	ORDER BY year `, (err, result) => {
+	if (err) {
+			console.log(err);
+			res.json({
+				message: "Try Again",
+				status: false,
+				err
+			});
+		} else {
+			res.json({
+				message: "Images to pdf years",
+				status: true,
+				result: result.rows,
+			});
+		}
+	});
+
+}
+
+
+
+ImgToPdf.getAllImgPdf_MonthWise_count = (req, res) => {
+	// sql.query(`SELECT date_trunc('Month', createdat) AS month, count(*) AS count
+	// FROM mergepdf
+	// GROUP BY 1
+	// ORDER BY 1`, (err, result) => {
+	sql.query(`SELECT EXTRACT(month FROM  createdat) AS month, COUNT(*) AS count
+	FROM imagepdf
+	GROUP BY EXTRACT(month FROM createdat )
+	ORDER BY month`, (err, result) => {
+	if (err) {
+			console.log(err);
+			res.json({
+				message: "Try Again",
+				status: false,
+				err
+			});
+		} else {
+			res.json({
+				message: "Monthly added word File",
+				status: true,
+				result: result.rows,
+			});
+		}
+	});
+
+}
+
+
+
+ImgToPdf.getAllImagePdf = (req, res) => {
+	sql.query(`SELECT "imagepdf".*, "user".username AS Uname FROM "imagepdf" JOIN "user" ON "user".id = "imagepdf".userid ;`, (err, result) => {
+		if (err) {
+			res.json({
+				message: "Try Again",
+				status: false,
+				err
+			});
+		} else {
+			res.json({
+				message: "ALL Images to  PDF FILES",
+				status: true,
+				result: result.rows,
+			});
+		}
+	});
+
+}
+
+ImgToPdf.getAllImagePdfCount = (req, res) => {
+	sql.query(`SELECT COUNT(*) FROM "imagepdf";`, (err, result) => {
+		if (err) {
+			res.json({
+				message: "Try Again",
+				status: false,
+				err
+			});
+		} else {
+			res.json({
+				message: "ALL Images to PDF FILES",
+				status: true,
+				result: result.rows,
+			});
 		}
 	});
 

@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS public.User (
         email text ,
         password text ,
         status text,
+        type text,
         createdAt timestamp,
         updatedAt timestamp ,
         PRIMARY KEY (id));
@@ -24,6 +25,15 @@ CREATE TABLE IF NOT EXISTS public.pdf (
         createdAt timestamp,
         updatedAt timestamp ,
         PRIMARY KEY (id)) ;
+
+        CREATE TABLE IF NOT EXISTS public.imagepdf (
+        id SERIAL NOT NULL,
+        userid SERIAL NOT NULL,
+        fileurl text ,
+        createdAt timestamp,
+        updatedAt timestamp ,
+        PRIMARY KEY (id)) ;
+
 
 
         CREATE TABLE IF NOT EXISTS public.mergepdf (
@@ -90,3 +100,15 @@ CREATE TABLE IF NOT EXISTS public.SubscriptionPlan (
         createdAt timestamp,
         updatedAt timestamp ,
         PRIMARY KEY (id));
+
+
+CREATE TABLE IF NOT EXISTS public.UsersSubscriptions (
+        id SERIAL NOT NULL,
+        userID SERIAL NOT NULL,
+        name text ,
+        email text,
+        subscriptionID SERIAL NOT NULL ,
+        createdAt timestamp,
+        updatedAt timestamp ,
+        PRIMARY KEY (id)); 
+        

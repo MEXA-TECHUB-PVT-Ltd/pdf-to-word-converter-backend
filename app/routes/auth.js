@@ -16,6 +16,13 @@ module.exports = app => {
     router.delete("/delete_user/:id", Auth.DeleteUser)
     router.get("/total_users", Auth.TotalUsers)
     router.get("/totay_added_users", Auth.todaysAddedUsers)
+    
+
+    router.get("/subscribed_user_count", Auth.SubscribedUserCount)
+    router.get("/subscribed_users", Auth.SubscribedUsers)
+
+    router.get("/block_users_count", Auth.BlockUserCount)
+    router.get("/block_users", Auth.BlockUsers)
 
 
     app.use('/auth', router);

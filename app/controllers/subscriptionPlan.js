@@ -1,5 +1,5 @@
 const subscriptionPlan = require("../models/subscriptionPlan");
-// const UsersSubscriptions = require("../models/usersSubscriptions");
+const UsersSubscriptions = require("../models/usersSubscriptions");
 
 exports.create = (req, res) => {
   if (!req.body) {
@@ -47,41 +47,33 @@ exports.delete = (req, res) => {
   subscriptionPlan.delete( req, res);
 };
 
-// exports.AvailSubscription = (req, res) => {
-//   if (!req.body) {
-//     res.json({
-//       message: "Content can not be empty!",
-//       status: false,
-//      });
-//   }  
-//   UsersSubscriptions.AvailSubscription( req, res);
-// };
-// exports.ViewSubscriptionPlanSpecificsubscriptionPlan = (req, res) => {
-//   if (!req.body) {
-//     res.json({
-//       message: "Content can not be empty!",
-//       status: false,
-//      });
-//   }  
-//   subscriptionPlan.ViewSubscriptionPlanSpecificsubscriptionPlan( req, res);
-// };
+exports.AvailSubscription = (req, res) => {
+  if (!req.body) {
+    res.json({
+      message: "Content can not be empty!",
+      status: false,
+     });
+  }  
+  UsersSubscriptions.AvailSubscription( req, res);
+};
 
-// exports.ViewSubscriptionPlanSpecificUser = (req, res) => {
-//   if (!req.body) {
-//     res.json({
-//       message: "Content can not be empty!",
-//       status: false,
-//      });
-//   }  
-//   UsersSubscriptions.ViewSubscriptionPlanSpecificUser( req, res);
-// };
+exports.ViewSubscriptionPlanSpecificUser = (req, res) => {
+  if (!req.body) {
+    res.json({
+      message: "Content can not be empty!",
+      status: false,
+     });
+  }  
+  UsersSubscriptions.ViewSubscriptionPlanSpecificUser( req, res);
+};
 
-// exports.ViewSubscriptionPlanUser = (req, res) => {
-//   if (!req.body) {
-//     res.json({
-//       message: "Content can not be empty!",
-//       status: false,
-//      });
-//   }  
-//   UsersSubscriptions.ViewSubscriptionPlanUser( req, res);
-// };
+exports.ViewSubscriptionPlanUser = (req, res) => {
+  if (!req.body) {
+    res.json({
+      message: "Content can not be empty!",
+      status: false,
+     });
+  }  
+  UsersSubscriptions.ViewSubscriptionPlanUser( req, res);
+};
+

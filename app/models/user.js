@@ -22,6 +22,7 @@ User.create = async (req, res) => {
 		email text ,
         password text ,
         status text,
+		type text,
         createdAt timestamp,
         updatedAt timestamp ,
         PRIMARY KEY (id))  ` , async (err, result) => {
@@ -54,10 +55,10 @@ User.create = async (req, res) => {
 					const salt = await bcrypt.genSalt(10);
 					let hashpassword = await bcrypt.hash(req.body.password, salt);
 					const { username, email} = req.body;
-					const query = `INSERT INTO "user" (id,username,email,password ,status , createdat ,updatedat )
-                            VALUES (DEFAULT, $1, $2, $3, $4 , 'NOW()','NOW()' ) RETURNING * `;
+					const query = `INSERT INTO "user" (id,username,email,password ,status ,type ,createdat ,updatedat )
+                            VALUES (DEFAULT, $1, $2, $3, $4 ,$5, 'NOW()','NOW()' ) RETURNING * `;
 					const foundResult = await sql.query(query,
-						[username, email, hashpassword, 'unblock']);
+						[username, email, hashpassword, 'unblock', 'Free Account']);
 					if (foundResult.rows.length > 0) {
 						if (err) {
 							res.json({
@@ -257,7 +258,7 @@ User.todaysAddedUsers = (req, res) => {
 
 
 User.TotalUsers = (req, res) => {
-	sql.query(`SELECT  COUNT(*) FROM "user" `, (err, result) => {
+	sql.query(`SELECT  COUNT(*) FROM "user" Where status = 'unblock' `, (err, result) => {
 		if (err) {
 			res.json({
 				message: "Try Again",
@@ -273,11 +274,9 @@ User.TotalUsers = (req, res) => {
 		}
 	});
 }
-
-
 
 User.AllUsers = (req, res) => {
-	sql.query(`SELECT * FROM "user" `, (err, result) => {
+	sql.query(`SELECT * FROM "user" Where status = 'unblock'`, (err, result) => {
 		if (err) {
 			res.json({
 				message: "Try Again",
@@ -293,6 +292,83 @@ User.AllUsers = (req, res) => {
 		}
 	});
 }
+
+
+
+User.BlockUserCount = (req, res) => {
+	sql.query(`SELECT  COUNT(*) FROM "user" Where status = 'block'`, (err, result) => {
+		if (err) {
+			res.json({
+				message: "Try Again",
+				status: false,
+				err
+			});
+		} else {
+			res.json({
+				message: "User Details",
+				status: true,
+				result: result.rows
+			});
+		}
+	});
+}
+
+User.BlockUsers = (req, res) => {
+	sql.query(`SELECT * FROM "user" where status = 'block' `, (err, result) => {
+		if (err) {
+			console.log(err);
+			res.json({
+				message: "Try Again",
+				status: false,
+				err
+			});
+		} else {
+			res.json({
+				message: "User Details",
+				status: true,
+				result: result.rows
+			});
+		}
+	});
+}
+
+
+User.SubscribedUserCount = (req, res) => {
+	sql.query(`SELECT  COUNT(*) FROM "user" Where type = 'subscribed'`, (err, result) => {
+		if (err) {
+			res.json({
+				message: "Try Again",
+				status: false,
+				err
+			});
+		} else {
+			res.json({
+				message: "User Details",
+				status: true,
+				result: result.rows
+			});
+		}
+	});
+}
+
+User.SubscribedUsers = (req, res) => {
+	sql.query(`SELECT * FROM "user" where type = 'subscribed' `, (err, result) => {
+		if (err) {
+			res.json({
+				message: "Try Again",
+				status: false,
+				err
+			});
+		} else {
+			res.json({
+				message: "User Details",
+				status: true,
+				result: result.rows
+			});
+		}
+	});
+}
+
 
 // User.updateProfile = async (req, res) => {
 // 	if (req.body.id === '') {
