@@ -106,6 +106,7 @@ privacyPolicy.UpdatePrivacyPolicy = (req, res) => {
 	} else {
 		sql.query(`UPDATE privacyPolicys SET title = '${req.body.title}', content = '${req.body.content}' WHERE id = ${req.body.id};`, async (err, result) => {
 			if (err) {
+				// console.log(err);
 				res.json({
 					message: "Try Again",
 					status: false,

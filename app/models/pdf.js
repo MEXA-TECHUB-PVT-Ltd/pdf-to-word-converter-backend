@@ -21,7 +21,7 @@ pdf.lockPdf = async (req, res) => {
 				status: false,
 				err
 			});
-		} else if(result.rowCount === 1) {
+		} else if (result.rowCount === 1) {
 			const password = req.body.password;
 			const username = req.body.id;
 
@@ -39,7 +39,7 @@ pdf.lockPdf = async (req, res) => {
 						})
 						console.log(data)
 					}
-					else{
+					else {
 						res.json({
 							status: false,
 							message: "Already encrypted, First Remove Encryption",
@@ -48,22 +48,22 @@ pdf.lockPdf = async (req, res) => {
 					}
 				})
 				.catch(err => {
-					if(err.error === false){
+					if (err.error === false) {
 						res.json({
 							status: true,
 							message: "Pdf File Encrypted Successfully",
 							result: result.rows
 						})
 						console.log(err)
-					}else{
-					res.json({
-						status: false,
-						message: err.message,
-					})
-					console.log(err)
-				}
+					} else {
+						res.json({
+							status: false,
+							message: err.message,
+						})
+						console.log(err)
+					}
 				});
-		}else{
+		} else {
 			res.json({
 				status: false,
 				message: 'No File Exists',
@@ -82,7 +82,7 @@ pdf.unlockPdf = async (req, res) => {
 				status: false,
 				err
 			});
-		} else if(result.rowCount === 1) {
+		} else if (result.rowCount === 1) {
 			const password = req.body.password;
 			const username = req.body.id;
 
@@ -101,7 +101,7 @@ pdf.unlockPdf = async (req, res) => {
 						})
 						console.log(data)
 					}
-					else{
+					else {
 						res.json({
 							status: false,
 							message: 'invalid password',
@@ -111,22 +111,22 @@ pdf.unlockPdf = async (req, res) => {
 				})
 				.catch(err => {
 					console.log(err)
-					if(err.error === false ){
+					if (err.error === false) {
 						res.json({
 							status: true,
 							message: "Pdf File Decrypt Successfully",
 							result: result.rows
 						})
 						console.log(err)
-					}else{
-					res.json({
-						status: false,
-						message: err.message,
-					})
-					console.log(err)
-				}
+					} else {
+						res.json({
+							status: false,
+							message: err.message,
+						})
+						console.log(err)
+					}
 				});
-		}else{
+		} else {
 			res.json({
 				status: false,
 				message: 'No File Exists',
@@ -255,8 +255,9 @@ pdf.mergePdf = async (req, res) => {
 }
 
 pdf.getAllPDF = (req, res) => {
-	sql.query(`SELECT * FROM "pdf";`, (err, result) => {
+	sql.query(`SELECT "pdf".*, "user".username AS Uname FROM "pdf" JOIN "user" ON "user".id = "pdf".userid ;`, (err, result) => {
 		if (err) {
+			console.log(err);
 			res.json({
 				message: "Try Again",
 				status: false,
@@ -275,7 +276,7 @@ pdf.getAllPDF = (req, res) => {
 
 
 pdf.getAllMergedPDF = (req, res) => {
-	sql.query(`SELECT * FROM "mergepdf";`, (err, result) => {
+	sql.query(`SELECT "mergepdf".*, "user".username AS Uname FROM "mergepdf" JOIN "user" ON "user".id = "mergepdf".userid ;`, (err, result) => {
 		if (err) {
 			res.json({
 				message: "Try Again",
@@ -293,6 +294,151 @@ pdf.getAllMergedPDF = (req, res) => {
 
 }
 
+pdf.getAllPDFCount = (req, res) => {
+	sql.query(`SELECT COUNT(*) FROM "pdf";`, (err, result) => {
+		if (err) {
+			res.json({
+				message: "Try Again",
+				status: false,
+				err
+			});
+		} else {
+			res.json({
+				message: "ALL PDF FILES",
+				status: true,
+				result: result.rows,
+			});
+		}
+	});
+
+}
+
+
+pdf.getAllMergedPdfYear = (req, res) => {
+	sql.query(`SELECT EXTRACT(year FROM  createdat) AS year
+	FROM "mergepdf" 
+	GROUP BY EXTRACT(year FROM createdat )
+	ORDER BY year `, (err, result) => {
+	if (err) {
+			console.log(err);
+			res.json({
+				message: "Try Again",
+				status: false,
+				err
+			});
+		} else {
+			res.json({
+				message: "Merged Pdf years",
+				status: true,
+				result: result.rows,
+			});
+		}
+	});
+
+}
+
+pdf.getAllPdfYear = (req, res) => {
+	sql.query(`SELECT EXTRACT(year FROM  createdat) AS year
+	FROM "pdf" 
+	GROUP BY EXTRACT(year FROM createdat )
+	ORDER BY year `, (err, result) => {
+	if (err) {
+			console.log(err);
+			res.json({
+				message: "Try Again",
+				status: false,
+				err
+			});
+		} else {
+			res.json({
+				message: "Word to pdf years",
+				status: true,
+				result: result.rows,
+			});
+		}
+	});
+
+}
+
+
+
+pdf.getAllPdf_MonthWise_count = (req, res) => {
+	// sql.query(`SELECT date_trunc('Month', createdat) AS month, count(*) AS count
+	// FROM mergepdf
+	// GROUP BY 1
+	// ORDER BY 1`, (err, result) => {
+		console.log(req.body.year);
+	sql.query(`SELECT EXTRACT(month FROM  createdat) AS month, COUNT(*) AS count
+	FROM "pdf" Where EXTRACT(year FROM createdat ) = $1
+	GROUP BY EXTRACT(month FROM createdat )
+	ORDER BY month `,[req.body.year], (err, result) => {
+	if (err) {
+			console.log(err);
+			res.json({
+				message: "Try Again",
+				status: false,
+				err
+			});
+		} else {
+			res.json({
+				message: "Monthly added Word to pdf",
+				status: true,
+				result: result.rows,
+			});
+		}
+	});
+
+}
+
+
+pdf.getMergedPdf_MonthWise_count = (req, res) => {
+	// sql.query(`SELECT date_trunc('Month', createdat) AS month, count(*) AS count
+	// FROM mergepdf
+	// GROUP BY 1
+	// ORDER BY 1`, (err, result) => {
+	sql.query(`SELECT EXTRACT(month FROM  createdat) AS month, COUNT(*) AS count
+	FROM mergepdf
+	GROUP BY EXTRACT(month FROM createdat )
+	ORDER BY month`, (err, result) => {
+	if (err) {
+			console.log(err);
+			res.json({
+				message: "Try Again",
+				status: false,
+				err
+			});
+		} else {
+			res.json({
+				message: "Monthly added Merged pdf",
+				status: true,
+				result: result.rows,
+			});
+		}
+	});
+
+}
+
+
+
+pdf.getAllMergedPDFCount = (req, res) => {
+	sql.query(`SELECT COUNT(*) FROM "mergepdf";`, (err, result) => {
+	if (err) {
+			console.log(err);
+			res.json({
+				message: "Try Again",
+				status: false,
+				err
+			});
+		} else {
+			res.json({
+				message: "ALL Merged PDF FILES",
+				status: true,
+				result: result.rows,
+			});
+		}
+	});
+
+}
 
 
 

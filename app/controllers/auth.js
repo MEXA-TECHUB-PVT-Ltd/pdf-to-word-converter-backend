@@ -79,6 +79,47 @@ exports.TotalUsers = (req, res) => {
   }  
   user.TotalUsers( req, res);
 };
+exports.SubscribedUserCount = (req, res) => {
+  if (!req.body) {
+    res.json({
+      message: "Content can not be empty!",
+      status: false,
+     });
+  }  
+  user.SubscribedUserCount( req, res);
+};
+
+exports.SubscribedUsers= (req, res) => {
+  if (!req.body) {
+    res.json({
+      message: "Content can not be empty!",
+      status: false,
+     });
+  }  
+  user.SubscribedUsers( req, res);
+};
+
+
+exports.BlockUserCount= (req, res) => {
+  if (!req.body) {
+    res.json({
+      message: "Content can not be empty!",
+      status: false,
+     });
+  }  
+  user.BlockUserCount( req, res);
+};
+exports.BlockUsers= (req, res) => {
+  if (!req.body) {
+    res.json({
+      message: "Content can not be empty!",
+      status: false,
+     });
+  }  
+  user.BlockUsers( req, res);
+};
+
+
 
 
 exports.verifyOTP = (req, res) => {

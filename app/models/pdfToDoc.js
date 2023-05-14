@@ -33,8 +33,61 @@ const pdfToDoc = function (pdfToDoc) {
 	this.fileurl = pdfToDoc.fileurl;
 };
 
+
+pdfToDoc.getAllWord_MonthWise_count = (req, res) => {
+	// sql.query(`SELECT date_trunc('Month', createdat) AS month, count(*) AS count
+	// FROM mergepdf
+	// GROUP BY 1
+	// ORDER BY 1`, (err, result) => {
+	sql.query(`SELECT EXTRACT(month FROM  createdat) AS month, COUNT(*) AS count
+	FROM word
+	GROUP BY EXTRACT(month FROM createdat )
+	ORDER BY month`, (err, result) => {
+	if (err) {
+			console.log(err);
+			res.json({
+				message: "Try Again",
+				status: false,
+				err
+			});
+		} else {
+			res.json({
+				message: "Monthly added word File",
+				status: true,
+				result: result.rows,
+			});
+		}
+	});
+
+}
+
+
+pdfToDoc.getAllWordYear = (req, res) => {
+	sql.query(`SELECT EXTRACT(year FROM  createdat) AS year
+	FROM "word" 
+	GROUP BY EXTRACT(year FROM createdat )
+	ORDER BY year `, (err, result) => {
+	if (err) {
+			console.log(err);
+			res.json({
+				message: "Try Again",
+				status: false,
+				err
+			});
+		} else {
+			res.json({
+				message: "pdf to word years",
+				status: true,
+				result: result.rows,
+			});
+		}
+	});
+
+}
+
+
 pdfToDoc.getAllWord = (req, res) => {
-	sql.query(`SELECT * FROM "word";`, (err, result) => {
+	sql.query(`SELECT "word".*, "user".username AS Uname FROM "word" JOIN "user" ON "user".id = "word".userid ;`, (err, result) => {
 		if (err) {
 			res.json({
 				message: "Try Again",
@@ -52,6 +105,24 @@ pdfToDoc.getAllWord = (req, res) => {
 
 }
 
+pdfToDoc.getAllWordCount = (req, res) => {
+	sql.query(`SELECT COUNT(*) FROM "word";`, (err, result) => {
+		if (err) {
+			res.json({
+				message: "Try Again",
+				status: false,
+				err
+			});
+		} else {
+			res.json({
+				message: "ALL WORD FILES",
+				status: true,
+				result: result.rows,
+			});
+		}
+	});
+
+}
 
 
 pdfToDoc.pdfToDoc = async (req, res) => {
