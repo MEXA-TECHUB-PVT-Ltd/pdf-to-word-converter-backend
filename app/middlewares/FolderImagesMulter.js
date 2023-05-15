@@ -3,7 +3,7 @@ const multer = require('multer');
 try {
     var storage = multer.diskStorage({
         destination: function (req, file, cb) {
-            cb(null, "/Users/mac/Desktop/PTWC/PTWC_Backend/imges_uploads/")
+            cb(null, "imges_uploads/")
         },
         filename: function (req, file, cb) {
             cb(null, Date.now() + "--" + file.originalname)
