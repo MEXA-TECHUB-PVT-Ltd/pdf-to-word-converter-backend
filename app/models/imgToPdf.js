@@ -72,7 +72,7 @@ const convert = async (req, res) => {
 			// list[i] = `/Users/mac/Desktop/PTWC/PTWC_Backend/app/models/docx/${req.files.pdf[i].name}`;
 		}
 	}
-	var filename = `./imges_uploads/${Date.now()}new.pdf`
+	var filename = `imges_uploads/${Date.now()}new.pdf`
 	await imagesToPdf(list, filename)
 
 	for (let i = 0; i < req.files.length; i++) {

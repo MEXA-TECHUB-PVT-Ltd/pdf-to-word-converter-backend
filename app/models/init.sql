@@ -112,3 +112,12 @@ CREATE TABLE IF NOT EXISTS public.UsersSubscriptions (
         updatedAt timestamp ,
         PRIMARY KEY (id)); 
         
+
+CREATE TABLE IF NOT EXISTS public.otp (
+            id SERIAL,
+            email text,
+            otp text,
+            status text,
+            createdAt timestamp NOT NULL,
+            updatedAt timestamp ,
+            PRIMARY KEY (id));
