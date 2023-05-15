@@ -63,7 +63,7 @@ const convert = async (req, res) => {
 	const inputPath = path.join(req.files[0].path);
 	console.log("inputPath")
 	console.log(inputPath)
-	const outputPath = path.join(`./imges_uploads/${Date.now()}new${ext}`);
+	const outputPath = path.join(`imges_uploads/${Date.now()}new${ext}`);
 	const docxBuf = await fs.readFile(inputPath);
 	// Convert it to pdf format with undefined filter (see Libreoffice docs about filter)
 	let pdfBuf = await libre.convertAsync(docxBuf, ext, undefined);
