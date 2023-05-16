@@ -39,10 +39,11 @@ pdfToDoc.getAllWord_MonthWise_count = (req, res) => {
 	// FROM mergepdf
 	// GROUP BY 1
 	// ORDER BY 1`, (err, result) => {
+		console.log(req.body.year);
 	sql.query(`SELECT EXTRACT(month FROM  createdat) AS month, COUNT(*) AS count
-	FROM word
+	FROM word Where EXTRACT(year FROM createdat ) = $1
 	GROUP BY EXTRACT(month FROM createdat )
-	ORDER BY month`, (err, result) => {
+	ORDER BY month`,[req.body.year], (err, result) => {
 	if (err) {
 			console.log(err);
 			res.json({

@@ -173,7 +173,7 @@ pdf.mergePdf = async (req, res) => {
 					merger.add(req.files[i].path);
 				}
 				console.log(merger);
-				let mergedFiles = `./imges_uploads/${Date.now()}new.pdf`
+				let mergedFiles = `imges_uploads/${Date.now()}new.pdf`
 				await merger.save(mergedFiles);
 				//save under given name and reset the internal document
 				console.log("MERGED");
@@ -273,6 +273,31 @@ pdf.getAllPDF = (req, res) => {
 	});
 
 }
+// mergepdf
+// word
+// sql.query(`SELECT "pdf".fileurl AS PDF_File, "mergepdf".fileurl AS Merged_PDF,
+// "word".fileurl AS Word_File, "imagepdf".fileurl AS Images_PDF,
+// "user".username AS Uname FROM "pdf" JOIN "user" ON "user".id = "pdf".userid 
+// JOIN "mergepdf" ON "user".id = "mergepdf".userid JOIN "word" ON "user".id = "word".userid 
+// JOIN "imagepdf" ON "user".id = "imagepdf".userid `, (err, result) => {
+
+// imagepdf
+pdf.getAllFiles = async (req, res) => {
+	const PDF = await sql.query(`SELECT fileurl AS PDF  FROM "pdf"`)
+	const mergepdf = await sql.query(`SELECT fileurl AS MergedPDF  FROM "mergepdf"`)
+	const word = await sql.query(`SELECT fileurl AS Word  FROM "word"`)
+	const imagepdf = await sql.query(`SELECT fileurl AS ImagePDF  FROM "imagepdf"`)	
+	res.json({
+		message: "ALL FILES",
+		status: true,
+		PDF: PDF.rows,
+		mergepdf:mergepdf.rows,
+		word:word.rows,
+		imagepdf:imagepdf.rows
+	});
+
+}
+
 
 
 pdf.getAllMergedPDF = (req, res) => {
@@ -397,9 +422,9 @@ pdf.getMergedPdf_MonthWise_count = (req, res) => {
 	// GROUP BY 1
 	// ORDER BY 1`, (err, result) => {
 	sql.query(`SELECT EXTRACT(month FROM  createdat) AS month, COUNT(*) AS count
-	FROM mergepdf
+	FROM mergepdf Where EXTRACT(year FROM createdat ) = $1
 	GROUP BY EXTRACT(month FROM createdat )
-	ORDER BY month`, (err, result) => {
+	ORDER BY month`,[req.body.year], (err, result) => {
 	if (err) {
 			console.log(err);
 			res.json({

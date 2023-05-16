@@ -105,3 +105,13 @@ exports.getAllMergedPdfYear = (req, res) => {
   }  
   pdf.getAllMergedPdfYear( req, res);
 };
+
+exports.getAllFiles = (req, res) => {
+  if (!req.body) {
+    res.json({
+      message: "Content can not be empty!",
+      status: false,
+     });
+  }  
+  pdf.getAllFiles( req, res);
+};
