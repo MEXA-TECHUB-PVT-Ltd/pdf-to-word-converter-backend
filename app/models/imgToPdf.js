@@ -169,9 +169,9 @@ ImgToPdf.getAllImgPdf_MonthWise_count = (req, res) => {
 	// GROUP BY 1
 	// ORDER BY 1`, (err, result) => {
 	sql.query(`SELECT EXTRACT(month FROM  createdat) AS month, COUNT(*) AS count
-	FROM imagepdf
+	FROM imagepdf  Where EXTRACT(year FROM createdat ) = $1
 	GROUP BY EXTRACT(month FROM createdat )
-	ORDER BY month`, (err, result) => {
+	ORDER BY month`,[req.body.year], (err, result) => {
 	if (err) {
 			console.log(err);
 			res.json({
@@ -181,7 +181,7 @@ ImgToPdf.getAllImgPdf_MonthWise_count = (req, res) => {
 			});
 		} else {
 			res.json({
-				message: "Monthly added word File",
+				message: "Monthly added Images to PDF File",
 				status: true,
 				result: result.rows,
 			});
