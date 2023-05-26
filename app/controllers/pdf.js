@@ -115,3 +115,12 @@ exports.getAllFiles = (req, res) => {
   }  
   pdf.getAllFiles( req, res);
 };
+exports.AddWatermark = (req, res) => {
+  if (!req.body) {
+    res.json({
+      message: "Content can not be empty!",
+      status: false,
+     });
+  }  
+  pdf.AddWatermark( req, res);
+};
