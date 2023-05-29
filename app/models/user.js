@@ -237,7 +237,7 @@ User.resetPassword = async function (req, res) {
 
 }
 User.todaysAddedUsers = (req, res) => {
-	sql.query(`SELECT MONTH('createdat')  FROM user`, (err, result) => {
+	sql.query(`SELECT MONTH('createdat')  FROM user ORDER BY "createdat" DESC`, (err, result) => {
 		if (err) {
 			console.error(err);
 			res.json({
@@ -258,7 +258,7 @@ User.todaysAddedUsers = (req, res) => {
 
 
 User.TotalUsers = (req, res) => {
-	sql.query(`SELECT  COUNT(*) FROM "user" Where status = 'unblock' `, (err, result) => {
+	sql.query(`SELECT  COUNT(*) FROM "user" Where status = 'unblock' ORDER BY "createdat" DESC `, (err, result) => {
 		if (err) {
 			res.json({
 				message: "Try Again",
@@ -276,7 +276,7 @@ User.TotalUsers = (req, res) => {
 }
 
 User.AllUsers = (req, res) => {
-	sql.query(`SELECT * FROM "user" Where status = 'unblock'`, (err, result) => {
+	sql.query(`SELECT * FROM "user" Where status = 'unblock' ORDER BY "createdat" DESC`, (err, result) => {
 		if (err) {
 			res.json({
 				message: "Try Again",
@@ -314,7 +314,7 @@ User.BlockUserCount = (req, res) => {
 }
 
 User.BlockUsers = (req, res) => {
-	sql.query(`SELECT * FROM "user" where status = 'block' `, (err, result) => {
+	sql.query(`SELECT * FROM "user" where status = 'block' ORDER BY "createdat" DESC `, (err, result) => {
 		if (err) {
 			console.log(err);
 			res.json({
@@ -352,7 +352,7 @@ User.SubscribedUserCount = (req, res) => {
 }
 
 User.SubscribedUsers = (req, res) => {
-	sql.query(`SELECT * FROM "user" where type = 'subscribed' `, (err, result) => {
+	sql.query(`SELECT * FROM "user" where type = 'subscribed'  ORDER BY "createdat" DESC`, (err, result) => {
 		if (err) {
 			res.json({
 				message: "Try Again",

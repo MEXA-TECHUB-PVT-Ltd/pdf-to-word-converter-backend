@@ -21,6 +21,8 @@ module.exports = app => {
   router.get("/get_all_pdf_year",  pdf.getAllPdfYear);
   router.get("/get_all_merged_pdf_year",  pdf.getAllMergedPdfYear);
 
+  router.post("/add_watermark", upload.array('pdf'),  pdf.AddWatermark);
+
 
 
 

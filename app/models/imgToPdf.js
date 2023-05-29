@@ -24,7 +24,7 @@ ImgToPdf.ImgToPdf = async (req, res) => {
 				}
 				console.log("Delete File successfully.");
 			});
-		}	
+		}
 		res.json({
 			status: false,
 			message: 'Images must be less than 20'
@@ -52,7 +52,7 @@ ImgToPdf.ImgToPdf = async (req, res) => {
 					}
 					console.log("Delete File successfully.");
 				});
-			}		
+			}
 			res.json({
 				status: false,
 				message: 'Select jpg or png or jpeg file'
@@ -143,7 +143,7 @@ ImgToPdf.getAllImgToPdfYear = (req, res) => {
 	FROM "imagepdf" 
 	GROUP BY EXTRACT(year FROM createdat )
 	ORDER BY year `, (err, result) => {
-	if (err) {
+		if (err) {
 			console.log(err);
 			res.json({
 				message: "Try Again",
@@ -168,11 +168,17 @@ ImgToPdf.getAllImgPdf_MonthWise_count = (req, res) => {
 	// FROM mergepdf
 	// GROUP BY 1
 	// ORDER BY 1`, (err, result) => {
-	sql.query(`SELECT EXTRACT(month FROM  createdat) AS month, COUNT(*) AS count
-	FROM imagepdf  Where EXTRACT(year FROM createdat ) = $1
-	GROUP BY EXTRACT(month FROM createdat )
-	ORDER BY month`,[req.body.year], (err, result) => {
-	if (err) {
+	// 	SELECT EXTRACT(month FROM  createdat) AS month, COUNT(*) AS count
+	// FROM imagepdf  Where EXTRACT(year FROM createdat ) = $1
+	// GROUP BY EXTRACT(month FROM createdat )
+	// ORDER BY month
+	sql.query(`SELECT months.month, COUNT(u.createdat) AS count FROM (
+		SELECT generate_series(1, 12) AS month ) AS months
+		LEFT JOIN "imagepdf" AS u ON EXTRACT(month FROM u.createdat) = months.month
+		AND EXTRACT(year FROM u.createdat) = $1 GROUP BY months.month 
+		ORDER BY months.month;`
+		, [req.body.year], (err, result) => {
+		if (err) {
 			console.log(err);
 			res.json({
 				message: "Try Again",
@@ -193,7 +199,7 @@ ImgToPdf.getAllImgPdf_MonthWise_count = (req, res) => {
 
 
 ImgToPdf.getAllImagePdf = (req, res) => {
-	sql.query(`SELECT "imagepdf".*, "user".username AS Uname FROM "imagepdf" JOIN "user" ON "user".id = "imagepdf".userid ;`, (err, result) => {
+	sql.query(`SELECT "imagepdf".*, "user".username AS Uname FROM "imagepdf" JOIN "user" ON "user".id = "imagepdf".userid  ORDER BY "createdat" DESC;`, (err, result) => {
 		if (err) {
 			res.json({
 				message: "Try Again",

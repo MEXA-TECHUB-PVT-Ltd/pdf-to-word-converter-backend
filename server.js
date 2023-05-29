@@ -30,7 +30,7 @@ app.use("/imges_uploads", express.static("imges_uploads"))
 app.use(express.urlencoded({ extended: true })); /* bodyParser.urlencoded() is deprecated */
 
 app.get("/", (req, res) => {
-  res.json({ message: "Welcome to PTWC" });
+  res.json({ message: "Welcome to Doc-Megician" });
 });
 
 require("./app/routes/admin")(app);
@@ -45,7 +45,7 @@ require("./app/routes/TermsConditions")(app);
 require("./app/routes/subscription")(app);
 
 // set port, listen for requests
-const PORT = process.env.PORT || 8082;
+const PORT = process.env.PORT || 3006;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });

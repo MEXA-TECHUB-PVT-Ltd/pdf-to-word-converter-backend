@@ -57,7 +57,7 @@ favourite.addPdfInFav = async (req, res) => {
 }
 favourite.viewAllPdfInFav = (req, res) => {
 	sql.query(`SELECT "pdf".* FROM "favpdf" JOIN "pdf" 
-	ON "favpdf".docid = "pdf".id  WHERE "favpdf".userid = $1;`,[req.body.userID], (err, result) => {
+	ON "favpdf".docid = "pdf".id  WHERE "favpdf".userid = $1 ORDER BY "createdat" DESC;`,[req.body.userID], (err, result) => {
 		if (err) {
 			res.json({
 				message: "Try Again",
@@ -153,7 +153,7 @@ favourite.addWordInFav = async (req, res) => {
 }
 favourite.viewAllWordInFav = (req, res) => {
 	sql.query(`SELECT "pdf".* FROM "favword" JOIN "pdf"
-	 ON "favword".docid = "pdf".id  WHERE "favword".userid = $1;`,[req.body.userID], (err, result) => {
+	 ON "favword".docid = "pdf".id  WHERE "favword".userid = $1 ORDER BY "createdat" DESC;`,[req.body.userID], (err, result) => {
 		if (err) {
 			res.json({
 				message: "Try Again",
