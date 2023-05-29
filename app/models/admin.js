@@ -122,7 +122,7 @@ admin.login = async function (req, res) {
 }
 
 admin.GetAllUser = (req, res) => {
-	sql.query(`SELECT * FROM "user"`, (err, result) => {
+	sql.query(`SELECT * FROM "user" ORDER BY "createdat" DESC`, (err, result) => {
 		if (err) {
 			console.log(err);
 			res.json({

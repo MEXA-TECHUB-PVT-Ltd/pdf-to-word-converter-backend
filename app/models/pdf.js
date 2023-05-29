@@ -223,10 +223,6 @@ pdf.AddWatermark = async (req, res) => {
 
 
 
-
-
-
-
 pdf.mergePdf = async (req, res) => {
 	if (!req.files) {
 		res.json({
@@ -346,7 +342,7 @@ pdf.mergePdf = async (req, res) => {
 }
 
 pdf.getAllPDF = (req, res) => {
-	sql.query(`SELECT "pdf".*, "user".username AS Uname FROM "pdf" JOIN "user" ON "user".id = "pdf".userid ;`, (err, result) => {
+	sql.query(`SELECT "pdf".*, "user".username AS Uname FROM "pdf" JOIN "user" ON "user".id = "pdf".userid ORDER BY "createdat" DESC;`, (err, result) => {
 		if (err) {
 			console.log(err);
 			res.json({
@@ -374,10 +370,10 @@ pdf.getAllPDF = (req, res) => {
 
 // imagepdf
 pdf.getAllFiles = async (req, res) => {
-	const PDF = await sql.query(`SELECT fileurl AS PDF  FROM "pdf"`)
-	const mergepdf = await sql.query(`SELECT fileurl AS MergedPDF  FROM "mergepdf"`)
-	const word = await sql.query(`SELECT fileurl AS Word  FROM "word"`)
-	const imagepdf = await sql.query(`SELECT fileurl AS ImagePDF  FROM "imagepdf"`)
+	const PDF = await sql.query(`SELECT fileurl AS PDF  FROM "pdf" ORDER BY "createdat" DESC`)
+	const mergepdf = await sql.query(`SELECT fileurl AS MergedPDF  FROM "mergepdf" ORDER BY "createdat" DESC`)
+	const word = await sql.query(`SELECT fileurl AS Word  FROM "word" ORDER BY "createdat" DESC`)
+	const imagepdf = await sql.query(`SELECT fileurl AS ImagePDF  FROM "imagepdf"  ORDER BY "createdat" DESC`)
 	res.json({
 		message: "ALL FILES",
 		status: true,
@@ -392,7 +388,8 @@ pdf.getAllFiles = async (req, res) => {
 
 
 pdf.getAllMergedPDF = (req, res) => {
-	sql.query(`SELECT "mergepdf".*, "user".username AS Uname FROM "mergepdf" JOIN "user" ON "user".id = "mergepdf".userid ;`, (err, result) => {
+	sql.query(`SELECT "mergepdf".*, "user".username AS Uname FROM
+	 "mergepdf" JOIN "user" ON "user".id = "mergepdf".userid ORDER BY "createdat" DESC ;`, (err, result) => {
 		if (err) {
 			res.json({
 				message: "Try Again",
@@ -484,10 +481,11 @@ pdf.getAllPdf_MonthWise_count = (req, res) => {
 	// GROUP BY 1
 	// ORDER BY 1`, (err, result) => {
 	console.log(req.body.year);
-	sql.query(`SELECT EXTRACT(month FROM  createdat) AS month, COUNT(*) AS count
-	FROM "pdf" Where EXTRACT(year FROM createdat ) = $1
-	GROUP BY EXTRACT(month FROM createdat )
-	ORDER BY month `, [req.body.year], (err, result) => {
+	sql.query(`SELECT months.month, COUNT(u.createdat) AS count FROM (
+		SELECT generate_series(1, 12) AS month ) AS months
+		LEFT JOIN "pdf" AS u ON EXTRACT(month FROM u.createdat) = months.month
+		AND EXTRACT(year FROM u.createdat) = $1 GROUP BY months.month 
+		ORDER BY months.month; `, [req.body.year], (err, result) => {
 		if (err) {
 			console.log(err);
 			res.json({
@@ -512,10 +510,11 @@ pdf.getMergedPdf_MonthWise_count = (req, res) => {
 	// FROM mergepdf
 	// GROUP BY 1
 	// ORDER BY 1`, (err, result) => {
-	sql.query(`SELECT EXTRACT(month FROM  createdat) AS month, COUNT(*) AS count
-	FROM mergepdf Where EXTRACT(year FROM createdat ) = $1
-	GROUP BY EXTRACT(month FROM createdat )
-	ORDER BY month`, [req.body.year], (err, result) => {
+	sql.query(`SELECT months.month, COUNT(u.createdat) AS count FROM (
+		SELECT generate_series(1, 12) AS month ) AS months
+		LEFT JOIN "mergepdf" AS u ON EXTRACT(month FROM u.createdat) = months.month
+		AND EXTRACT(year FROM u.createdat) = $1 GROUP BY months.month 
+		ORDER BY months.month;`, [req.body.year], (err, result) => {
 		if (err) {
 			console.log(err);
 			res.json({
