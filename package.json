@@ -66,6 +66,7 @@
     "pdftodocx": "^1.0.2",
     "pg": "^8.9.0",
     "pg-hstore": "^2.3.4",
+    "phantomjs-prebuilt": "^2.1.16",
     "purejswatermark": "^0.0.7",
     "qpdf": "^0.1.0-prealpha.1",
     "sequelize": "^6.29.0",
