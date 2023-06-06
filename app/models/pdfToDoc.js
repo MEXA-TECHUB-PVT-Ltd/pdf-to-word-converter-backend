@@ -1,15 +1,15 @@
 
 const { sql } = require("../config/db.config");
 // const fs = require('fs').promises;
-var GroupDocs = require('groupdocs-conversion-cloud');
-global.clientId = "3d689a28-3d66-4f30-b77a-afb4660135dc";
-global.clientSecret = "eea042a9d1384bcf8b80eeb2665e5ce9";
-global.myStorage = "";
+// var GroupDocs = require('groupdocs-conversion-cloud');
+// global.clientId = "3d689a28-3d66-4f30-b77a-afb4660135dc";
+// global.clientSecret = "eea042a9d1384bcf8b80eeb2665e5ce9";
+// global.myStorage = "";
 // const unoconv = require('node-unoconv');
-const unoconv = require('awesome-unoconv');
+// const unoconv = require('awesome-unoconv');
 
 
-const PDFServicesSdk = require('@adobe/pdfservices-node-sdk');
+// const PDFServicesSdk = require('@adobe/pdfservices-node-sdk');
 // const fs = require('fs');
 // const unoconv = require('unoconv');
 // const unoconv = require('awesome-unoconv');
@@ -17,16 +17,16 @@ const PDFServicesSdk = require('@adobe/pdfservices-node-sdk');
 // const { exec } = require('child_process');
 const path = require('path');
 const { spawn } = require('child_process');
-const pandoc = require('node-pandoc');
+// const pandoc = require('node-pandoc');
 const fs = require('fs');
 
-const convertApi = require('cloudmersive-convert-api-client');
-const defaultClient = convertApi.ApiClient.instance;
-const apikey = defaultClient.authentications['Apikey'];
-apikey.apiKey = ''; // Replace with your own API key
+// const convertApi = require('cloudmersive-convert-api-client');
+// const defaultClient = convertApi.ApiClient.instance;
+// const apikey = defaultClient.authentications['Apikey'];
+// apikey.apiKey = ''; // Replace with your own API key
 
-const config = new GroupDocs.Configuration(clientId, clientSecret);
-config.apiBaseUrl = "https://api.groupdocs.cloud";
+// const config = new GroupDocs.Configuration(clientId, clientSecret);
+// config.apiBaseUrl = "https://api.groupdocs.cloud";
 
 const pdfToDoc = function (pdfToDoc) {
 	this.userid = pdfToDoc.userid;

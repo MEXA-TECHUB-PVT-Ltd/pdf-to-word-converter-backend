@@ -1,14 +1,10 @@
 //imports
 const { sql } = require("../config/db.config");
 const path = require('path');
-// const fs = require('fs').promises;
+
 const PDFMerger = require('pdf-merger-js');
 const Processor = require('encrypt-decrpt-pdf').PDFProcessor;
 const PDFWatermark = require('pdf-watermark');
-const mammoth = require('mammoth');
-const Docxtemplater = require('docxtemplater');
-const ImageModule = require('docxtemplater-image-module');
-const officegen = require('officegen');
 const fs = require('fs');
 
 

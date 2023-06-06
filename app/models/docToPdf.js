@@ -1,13 +1,11 @@
 const { sql } = require("../config/db.config");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const { nanoid } = require('nanoid');
-const validateUrl = require('../utils/utils');
-var docxConverter = require('docx-pdf');
+// s// const { nanoid } = require('nanoid');
+// const validateUrl = require('../utils/utils');
+// var docxConverter = require('docx-pdf');
 const libre = require('libreoffice-convert');
 libre.convertAsync = require('util').promisify(libre.convert);
 const path = require('path');
-var toPdf = require("custom-soffice-to-pdf")
+// var toPdf = require("custom-soffice-to-pdf")
 const fs = require('fs').promises;
 
 const docToPdf = function (docToPdf) {
